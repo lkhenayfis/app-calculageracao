@@ -21,6 +21,7 @@ for (dir_tab in dirs) {
     file.copy(file.path(dir_mod, arq_mods), file.path("data", outarqs))
 }
 
-usi_ug <- rbindlist(usi_ug)
-setorder(usi_ug, cod)
+usi_ug <- rbindlist(usi_ug)[, c(1:4, 7)]
+colnames(usi_ug) <- c("codigo", "ug", "potencia_nominal", "vazao_efetiva", "colina")
+setorder(usi_ug, codigo)
 saveRDS(usi_ug, "data/usinas_ugs.rds")
