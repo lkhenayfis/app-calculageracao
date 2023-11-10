@@ -29,8 +29,8 @@ parsecoefs <- function(x) {
 # leitura do hidr ----------------------------------------------------------------------------------
 
 hidr <- fread("data-raw/Hidr_CadUsH.csv")
-hidr <- hidr[, 1:7]
-colnames(hidr) <- c("codigo", "nome", "subsistema", "empresa", "posto", "posto_bdh", "jusante")
+hidr <- hidr[, c(1, 2, 7, 9, 15:19)]
+colnames(hidr) <- c("codigo", "nome", "jusante", "volume_maximo", paste0("pvc_", 0:4))
 
 hidr[, jusante := as.numeric(sub(" -.*", "", substr(jusante, 1, 4)))]
 
