@@ -1,6 +1,8 @@
 library(data.table)
 library(polijus)
 
+source("R/validadores.r")
+
 # auxiliares ---------------------------------------------------------------------------------------
 
 splitporpat <- function(pat, orig = polijus_raw) {
@@ -25,16 +27,6 @@ parsecoefs <- function(x) {
 
     return(out)
 }
-
-# leitura do hidr ----------------------------------------------------------------------------------
-
-hidr <- fread("data-raw/Hidr_CadUsH.csv")
-hidr <- hidr[, c(1, 2, 7, 9, 15:19)]
-colnames(hidr) <- c("codigo", "nome", "jusante", "volume_maximo", paste0("pvc_", 0:4))
-
-hidr[, jusante := as.numeric(sub(" -.*", "", substr(jusante, 1, 4)))]
-
-saveRDS(hidr, "data/hidr.rds")
 
 # leitura e padronizacao do polijus ----------------------------------------------------------------
 
@@ -75,3 +67,18 @@ for (i in seq_along(polijus)) {
     outarq <- file.path("data", paste0("polijus_", usinas[i], ".rds"))
     saveRDS(polijus[[i]], outarq)
 }
+
+# leitura do hidr ----------------------------------------------------------------------------------
+
+univocas <- sapply(polijus, is.univoca)
+univocas <- data.table(codigo = as.numeric(names(univocas)), univoca = unname(univocas))
+
+hidr <- fread("data-raw/Hidr_CadUsH.csv")
+hidr <- hidr[, c(1, 2, 7, 9, 15:19)]
+colnames(hidr) <- c("codigo", "nome", "jusante", "volume_maximo", paste0("pvc_", 0:4))
+
+hidr[, jusante := as.numeric(sub(" -.*", "", substr(jusante, 1, 4)))]
+
+hidr <- merge(hidr, univocas, all = TRUE)
+
+saveRDS(hidr, "data/hidr.rds")
