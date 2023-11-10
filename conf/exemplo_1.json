@@ -1,0 +1,19 @@
+{
+    "PARAMETROS": [
+        {
+            "codigo": 6,
+            "turbinamento": [
+                200,
+                200,
+                200,
+                200,
+                200,
+                200,
+                200,
+                200
+            ],
+            "vertimento": 500,
+            "volume": 0.8
+        }
+    ]
+}
