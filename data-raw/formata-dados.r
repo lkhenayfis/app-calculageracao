@@ -26,6 +26,16 @@ parsecoefs <- function(x) {
     return(out)
 }
 
+# leitura do hidr ----------------------------------------------------------------------------------
+
+hidr <- fread("data-raw/Hidr_CadUsH.csv")
+hidr <- hidr[, 1:7]
+colnames(hidr) <- c("codigo", "nome", "subsistema", "empresa", "posto", "posto_bdh", "jusante")
+
+hidr[, jusante := as.numeric(sub(" -.*", "", substr(jusante, 1, 4)))]
+
+saveRDS(hidr, "data/hidr.rds")
+
 # leitura e padronizacao do polijus ----------------------------------------------------------------
 
 polijus_raw <- readLines("data-raw/polinjus.dat")
