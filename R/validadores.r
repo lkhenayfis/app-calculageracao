@@ -14,15 +14,25 @@ is.univoca <- function(surfchave) {
 #' 
 #' @param lst lista proveniente do json de entrada
 
-valida_num_maq <- function(lst, usi_ug = usinas_ugs) {
+valida_num_maq <- function(lst, USINAS_UGS) {
     usinas <- sapply(lst, "[[", "codigo")
-    nmaq   <- usi_ug[, .N, by = codigo]
+    nmaq   <- USINAS_UGS[, .N, by = codigo]
     nmaq   <- nmaq[match(usinas, codigo), N]
     num_turbs <- sapply(lapply(lst, "[[", "turbinamento"), length)
-    nmaq == num_turbs
+    check <- nmaq == num_turbs
+
+    if (!all(check)) {
+        errados <- which(!v_maq)
+        usinas <- usinas[errados]
+        msg <- paste0("Usinas (", paste0(usinas, collapse = ", "), ") informadas com vetor ",
+            "de turbinamentos de comprimento diferente do numero de maquinas")
+        stop(msg)
+    }
+
+    return(NULL)
 }
 
-valida_vol_jus <- function(lst, HIDR = hidr) {
+valida_vol_jus <- function(lst, HIDR) {
     
     usinas <- sapply(lst, "[[", "codigo")
 
@@ -34,7 +44,15 @@ valida_vol_jus <- function(lst, HIDR = hidr) {
     contem_voljus <- sapply(lst, "[[", "volume_jusante")
     contem_voljus <- !sapply(contem_voljus, is.null)
 
-    out <- univoca | contem_voljus | jusantes_in_arq
+    check <- univoca | contem_voljus | jusantes_in_arq
 
-    return(out)
+    if (!all(check)) {
+        errados <- which(!check)
+        usinas <- usinas[errados]
+        msg <- paste0("Usinas (", paste0(usinas, collapse = ", "), ") necessitam volume da usina",
+            " de jusante porem nao foi informado")
+        stop(msg)
+    }
+
+    return(NULL)
 }
