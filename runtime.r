@@ -33,14 +33,14 @@ parseparametros <- function(params) {
 
         # Se for nao univoca, ou o volume de jusante esta no proprio registro ou no da usina
         # de jusante
-        cod_jus <- hidr[codigo == cod, jusante]
-        if (is.null(param$volume_jusante)) {
-            volume_jus <- params[usinas == cod_jus]$volume_jusante
-        } else {
-            volume_jus <- param$volume_jusante
-        }
+        #cod_jus <- hidr[codigo == cod, jusante]
+        #if (is.null(param$volume_jusante)) {
+        #    volume_jus <- params[usinas == cod_jus]$volume_jusante
+        #} else {
+        #    volume_jus <- param$volume_jusante
+        #}
 
-        param$nmont_jus <- sum(hidr[codigo == cod_jus, 5:9] * volume_jus^(0:4))
+        #param$nmont_jus <- sum(hidr[codigo == cod_jus, 5:9] * volume_jus^(0:4))
         return(param)
     })
 
