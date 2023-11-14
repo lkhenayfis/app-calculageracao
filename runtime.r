@@ -109,7 +109,7 @@ calcula_geracao <- function(PARAMETROS) {
 
     warns <- lapply(geracoes, attr, "WARNING")
     out   <- mapply(PARAMETROS, geracoes,
-        FUN = function(par, ger) list(codigo = par$codigo, geracao = ger),
+        FUN = function(par, ger) list(codigo = par$codigo, geracao = as.numeric(ger)),
         SIMPLIFY = FALSE)
     out <- c(RESULTADO = list(out), AVISOS = warns)
 
