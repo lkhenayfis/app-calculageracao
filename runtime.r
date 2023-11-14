@@ -115,3 +115,5 @@ calcula_geracao <- function(PARAMETROS) {
 
     return(out)
 }
+
+lambdr::start_lambda()
