@@ -14,8 +14,8 @@ parseparametros <- function(params) {
 
     # nivel de montante de cada usina
     params <- lapply(params, function(param) {
-        volmax <- hidr[codigo == param$codigo, volume_maximo]
-        volume <- param$volume * volmax
+        #volmax <- hidr[codigo == param$codigo, volume_maximo]
+        volume <- param$volume #* volmax
         nmont <- sum(hidr[codigo == param$codigo, 5:9] * volume^(0:4))
         param$nmont <- nmont
         param
@@ -25,7 +25,7 @@ parseparametros <- function(params) {
     usinas <- sapply(params, "[[", "codigo")
     params <- lapply(params, function(param) {
         cod <- param$codigo
-        
+
         if (hidr[codigo == cod, univoca]) {
             param$nmont_jus <- 0
             return(param)
@@ -39,7 +39,7 @@ parseparametros <- function(params) {
         } else {
             volume_jus <- param$volume_jusante
         }
-        
+
         param$nmont_jus <- sum(hidr[codigo == cod_jus, 5:9] * volume_jus^(0:4))
         return(param)
     })
