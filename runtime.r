@@ -3,6 +3,7 @@ library(polijus)
 library(curvacolina)
 
 source("R/validadores.r")
+source("R/leitura.r")
 
 # AUXILIARES ---------------------------------------------------------------------------------------
 
@@ -68,7 +69,7 @@ calcula_geracao_unit <- function(param, hidr, usinas_ugs) {
 
     # rendimento de colina
     colinas <- usinas_ugs[codigo == cod, unique(colina)]
-    colinas <- lapply(file.path("data", paste0("colina_", cod, "_", colinas, ".rds")), readRDS)
+    colinas <- le_colina(cod, colinas, "s3://ons-pem-historico", "gtdp/app-calculager")
 
     queda_liq <- param$nmont - njus - perda
     rends <- lapply(seq_along(param$turbinamento), function(i) {
@@ -97,8 +98,10 @@ calcula_geracao_unit <- function(param, hidr, usinas_ugs) {
 
 calcula_geracao <- function(PARAMETROS) {
 
-    hidr <- readRDS("data/hidr.rds")
-    usinas_ugs <- readRDS("data/usinas_ugs.rds")
+    hidr <- aws.s3::s3read_using(readRDS, object = "gtdp/app-calculager/hidr.rds",
+        bucket = "s3://ons-pem-historico")
+    usinas_ugs <- aws.s3::s3read_using(readRDS, object = "gtdp/app-calculager/usinas_ugs.rds",
+        bucket = "s3://ons-pem-historico")
 
     valida_num_maq(PARAMETROS, usinas_ugs)
     #valida_vol_jus(PARAMETROS, hidr)
