@@ -74,8 +74,9 @@ univocas <- sapply(polijus, is.univoca)
 univocas <- data.table(codigo = as.numeric(names(univocas)), univoca = unname(univocas))
 
 hidr <- fread("data-raw/Hidr_CadUsH.csv")
-hidr <- hidr[, c(1, 2, 7, 9, 15:19, 47)]
-colnames(hidr) <- c("codigo", "nome", "jusante", "volume_maximo", paste0("pvc_", 0:4), "perda_media")
+hidr <- hidr[, c(1, 2, 7, 9, 15:19, 38, 47)]
+colnames(hidr) <- c("codigo", "nome", "jusante", "volume_maximo", paste0("pvc_", 0:4),
+    "canal_fuga_medio", "perda_media")
 
 hidr[, jusante := as.numeric(sub(" -.*", "", substr(jusante, 1, 4)))]
 
