@@ -50,7 +50,7 @@ parseparametros <- function(params) {
 # CALCULA GERACAO ----------------------------------------------------------------------------------
 
 calcula_geracao_unit <- function(param, hidr, usinas_ugs) {
-    
+
     cod <- param$codigo
     turb <- sum(param$turbinamento)
     vert <- param$vertimento
@@ -61,14 +61,15 @@ calcula_geracao_unit <- function(param, hidr, usinas_ugs) {
     ###################################################
 
     # nivel de jusante
-    polijus <- readRDS(file.path("data", paste0("polijus_", cod, ".rds")))
-    dat  <- data.table(vazao = turb + vert, nmont = param$nmont_jus)
-    njus <- predicted.polijusM(polijus, dat)
+    #polijus <- readRDS(file.path("data", paste0("polijus_", cod, ".rds")))
+    #dat  <- data.table(vazao = turb + vert, nmont = param$nmont_jus)
+    #njus <- predicted.polijusM(polijus, dat)
+    njus <- hidr[codigo == cod, canal_fuga_medio]
 
     # rendimento de colina
     colinas <- usinas_ugs[codigo == cod, unique(colina)]
     colinas <- lapply(file.path("data", paste0("colina_", cod, "_", colinas, ".rds")), readRDS)
-    
+
     queda_liq <- param$nmont - njus - perda
     rends <- lapply(seq_along(param$turbinamento), function(i) {
         idcolina <- usinas_ugs[(codigo == cod) & (ug == i), colina]
