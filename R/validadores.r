@@ -22,7 +22,7 @@ valida_num_maq <- function(lst, USINAS_UGS) {
     check <- nmaq == num_turbs
 
     if (!all(check)) {
-        errados <- which(!v_maq)
+        errados <- which(!check)
         usinas <- usinas[errados]
         msg <- paste0("Usinas (", paste0(usinas, collapse = ", "), ") informadas com vetor ",
             "de turbinamentos de comprimento diferente do numero de maquinas")
@@ -33,7 +33,7 @@ valida_num_maq <- function(lst, USINAS_UGS) {
 }
 
 valida_vol_jus <- function(lst, HIDR) {
-    
+
     usinas <- sapply(lst, "[[", "codigo")
 
     univoca <- HIDR[match(usinas, codigo), univoca]
