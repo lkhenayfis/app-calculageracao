@@ -101,7 +101,7 @@ calcula_geracao <- function(PARAMETROS) {
     usinas_ugs <- readRDS("data/usinas_ugs.rds")
 
     valida_num_maq(PARAMETROS, usinas_ugs)
-    valida_vol_jus(PARAMETROS, hidr)
+    #valida_vol_jus(PARAMETROS, hidr)
 
     PARAMETROS <- parseparametros(PARAMETROS)
 
