@@ -34,14 +34,14 @@ parseparametros <- function(params) {
 
         # Se for nao univoca, ou o volume de jusante esta no proprio registro ou no da usina
         # de jusante
-        #cod_jus <- hidr[codigo == cod, jusante]
-        #if (is.null(param$volume_jusante)) {
-        #    volume_jus <- params[usinas == cod_jus]$volume_jusante
-        #} else {
-        #    volume_jus <- param$volume_jusante
-        #}
+        cod_jus <- hidr[codigo == cod, jusante]
+        if (is.null(param$volume_jusante)) {
+            volume_jus <- params[usinas == cod_jus]$volume_jusante
+        } else {
+            volume_jus <- param$volume_jusante
+        }
 
-        #param$nmont_jus <- sum(hidr[codigo == cod_jus, 5:9] * volume_jus^(0:4))
+        param$nmont_jus <- sum(hidr[codigo == cod_jus, 5:9] * volume_jus^(0:4))
         return(param)
     })
 
@@ -51,7 +51,7 @@ parseparametros <- function(params) {
 # CALCULA GERACAO ----------------------------------------------------------------------------------
 
 calcula_geracao_unit <- function(param, hidr, usinas_ugs) {
-
+    
     cod <- param$codigo
     turb <- sum(param$turbinamento)
     vert <- param$vertimento
@@ -62,10 +62,9 @@ calcula_geracao_unit <- function(param, hidr, usinas_ugs) {
     ###################################################
 
     # nivel de jusante
-    #polijus <- readRDS(file.path("data", paste0("polijus_", cod, ".rds")))
-    #dat  <- data.table(vazao = turb + vert, nmont = param$nmont_jus)
-    #njus <- predicted.polijusM(polijus, dat)
-    njus <- hidr[codigo == cod, canal_fuga_medio]
+    polijus <- readRDS(file.path("data", paste0("polijus_", cod, ".rds")))
+    dat  <- data.table(vazao = turb + vert, nmont = param$nmont_jus)
+    njus <- predicted.polijusM(polijus, dat)
 
     # rendimento de colina
     colinas <- usinas_ugs[codigo == cod, unique(colina)]
@@ -104,7 +103,7 @@ calcula_geracao <- function(PARAMETROS) {
         bucket = "s3://ons-pem-historico")
 
     valida_num_maq(PARAMETROS, usinas_ugs)
-    #valida_vol_jus(PARAMETROS, hidr)
+    valida_vol_jus(PARAMETROS, hidr)
 
     PARAMETROS <- parseparametros(PARAMETROS)
 
