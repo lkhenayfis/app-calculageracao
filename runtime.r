@@ -7,7 +7,7 @@ source("R/leitura.r")
 
 # AUXILIARES ---------------------------------------------------------------------------------------
 
-parseparametros <- function(params) {
+parseparametros <- function(params, hidr) {
     params <- lapply(params, function(param) {
         param$turbinamento <- unlist(param$turbinamento)
         param
@@ -51,7 +51,7 @@ parseparametros <- function(params) {
 # CALCULA GERACAO ----------------------------------------------------------------------------------
 
 calcula_geracao_unit <- function(param, hidr, usinas_ugs) {
-    
+
     cod <- param$codigo
     turb <- sum(param$turbinamento)
     vert <- param$vertimento
@@ -105,7 +105,7 @@ calcula_geracao <- function(PARAMETROS) {
     valida_num_maq(PARAMETROS, usinas_ugs)
     valida_vol_jus(PARAMETROS, hidr)
 
-    PARAMETROS <- parseparametros(PARAMETROS)
+    PARAMETROS <- parseparametros(PARAMETROS, hidr)
 
     geracoes <- lapply(PARAMETROS, calcula_geracao_unit, hidr = hidr, usinas_ugs = usinas_ugs)
 
