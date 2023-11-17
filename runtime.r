@@ -36,7 +36,7 @@ parseparametros <- function(params, hidr) {
         # de jusante
         cod_jus <- hidr[codigo == cod, jusante]
         if (is.null(param$volume_jusante)) {
-            volume_jus <- params[usinas == cod_jus]$volume_jusante
+            volume_jus <- params[usinas == cod_jus][[1]]$volume
         } else {
             volume_jus <- param$volume_jusante
         }
