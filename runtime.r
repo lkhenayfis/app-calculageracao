@@ -7,6 +7,15 @@ source("R/leitura.r")
 
 # AUXILIARES ---------------------------------------------------------------------------------------
 
+reform_list <- function(lixo) {
+    lixo <- split(lixo, seq_len(nrow(lixo)))
+    lixo <- lapply(lixo, as.list)
+    lixo <- lapply(lixo, function(l) l[!sapply(l, is.na)])
+    lixo <- lapply(lixo, function(l) {l$turbinamento <- l$turbinamento[[1]]; l})
+    lixo <- unname(lixo)
+    return(lixo)
+}
+
 parseparametros <- function(params, hidr) {
     params <- lapply(params, function(param) {
         param$turbinamento <- unlist(param$turbinamento)
@@ -96,6 +105,8 @@ calcula_geracao_unit <- function(param, hidr, usinas_ugs) {
 }
 
 calcula_geracao <- function(PARAMETROS) {
+
+    PARAMETROS <- reform_list(PARAMETROS)
 
     hidr <- aws.s3::s3read_using(readRDS, object = "gtdp/app-calculager/hidr.rds",
         bucket = "s3://ons-pem-historico")
