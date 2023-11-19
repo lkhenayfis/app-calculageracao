@@ -15,6 +15,7 @@ RUN yum -y install openssl-devel
 
 COPY . .
 
+ENV RENV_PATHS_ROOT="/tmp/.local/share/renv"
 RUN Rscript -e "renv::restore()"
 
 RUN rm .Renviron
