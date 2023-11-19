@@ -71,7 +71,7 @@ calcula_geracao_unit <- function(param, hidr, usinas_ugs) {
     ###################################################
 
     # nivel de jusante
-    polijus <- readRDS(file.path("data", paste0("polijus_", cod, ".rds")))
+    polijus <- le_polijus(cod, "s3://ons-pem-historico", "gtdp/app-calculager")
     dat  <- data.table(vazao = turb + vert, nmont = param$nmont_jus)
     njus <- predicted.polijusM(polijus, dat)
 
