@@ -1,5 +1,0 @@
-data
-data-raw
-renv/library
-renv/staging
-dockerfile
