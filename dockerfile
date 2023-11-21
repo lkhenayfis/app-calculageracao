@@ -18,14 +18,12 @@ RUN yum -y install openssl-devel
 # Dependencias de R --------------------------------------------------------------------------------
 
 RUN mkdir -p renv
-COPY renv.lock renv.lock
 COPY .Renviron .Renviron
-COPY .Rprofile .Rprofile
-COPY renv/activate.R renv/activate.R
-COPY renv/settings.json renv/settings.json
 
-ENV RENV_PATHS_ROOT="/tmp/.local/share/renv"
-RUN Rscript -e "renv::restore()"
+RUN Rscript -e "install.packages(c('httr', 'jsonlite', 'logger', 'data.table', 'aws.s3', 'remotes'), repos = 'https://packagemanager.rstudio.com/all/__linux__/centos7/latest')"
+RUN Rscript -e "remotes::install_github('mdneuzerling/lambdr')"
+RUN Rscript -e "remotes::install_github('lkhenayfis/gtdp-polijus@lite')"
+RUN Rscript -e "remotes::install_github('lkhenayfis/gtdp-curvacolina@lite')"
 
 # Demais configs de R e copia dos .R ---------------------------------------------------------------
 
