@@ -57,6 +57,19 @@ parseparametros <- function(params, hidr) {
     return(params)
 }
 
+get_rho_g <- function(colina) {
+    if (!is.null(colina$colina)) {
+        colina <- colina$colina
+    } else {
+        colina <- colina[["superficies"]][[1]]$colina
+    }
+
+    rho <- attr(colina, "rho")
+    g   <- attr(colina, "g")
+
+    return(list(rho, g))
+}
+
 # CALCULA GERACAO ----------------------------------------------------------------------------------
 
 calcula_geracao_unit <- function(param, hidr, usinas_ugs) {
@@ -84,14 +97,15 @@ calcula_geracao_unit <- function(param, hidr, usinas_ugs) {
         idcolina <- usinas_ugs[(codigo == cod) & (ug == i), colina]
         colina   <- colinas[[idcolina]]
         dat  <- data.table(hl = queda_liq, vaz = param$turbinamento[i])
-        predict(colina, dat, full.output = TRUE)
+        predict(colina, dat, as.gradecolina = TRUE)$grade[, .(hl, vaz, rend, inhull)]
     })
     rends <- rbindlist(rends)
     rends[, rend := rend * 10^-2]
 
     # geracoes por maquina
-    rho <- attr(colinas[[1]]$colina, "rho")
-    g   <- attr(colinas[[1]]$colina, "g")
+    rho_g <- get_rho_g(colinas[[1]])
+    rho <- rho_g[[1]]
+    g   <- rho_g[[2]]
     ger <- sum(rends[, hl * vaz * rend * rend_ger * g * rho * 10^-6])
 
     if (!all(rends$inhull)) {
