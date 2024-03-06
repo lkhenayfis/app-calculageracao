@@ -1,2 +1,4 @@
 data
+credentials
+conf/issues/**
 .Renviron
