@@ -84,13 +84,13 @@ calcula_geracao_unit <- function(param, hidr, usinas_ugs) {
     ###################################################
 
     # nivel de jusante
-    polijus <- le_polijus(cod, "s3://ons-pem-historico", "gtdp/app-calculager")
+    polijus <- le_polijus(cod)
     dat  <- data.table(vazao = turb + vert, nmont = param$nmont_jus)
     njus <- predicted.polijusM(polijus, dat)
 
     # rendimento de colina
     colinas <- usinas_ugs[codigo == cod, unique(colina)]
-    colinas <- le_colina(cod, colinas, "s3://ons-pem-historico", "gtdp/app-calculager")
+    colinas <- le_colina(cod, colinas)
 
     queda_liq <- param$nmont - njus - perda
     rends <- lapply(seq_along(param$turbinamento), function(i) {
@@ -120,12 +120,10 @@ calcula_geracao_unit <- function(param, hidr, usinas_ugs) {
 
 calcula_geracao <- function(PARAMETROS) {
 
-    PARAMETROS <- reform_list(PARAMETROS)
+    PARAMETROS <- PARAMETROS$PARAMETROS
 
-    hidr <- aws.s3::s3read_using(readRDS, object = "gtdp/app-calculager/hidr.rds",
-        bucket = "s3://ons-pem-historico")
-    usinas_ugs <- aws.s3::s3read_using(readRDS, object = "gtdp/app-calculager/usinas_ugs.rds",
-        bucket = "s3://ons-pem-historico")
+    hidr <- readRDS(file.path("data", "hidr.rds"))
+    usinas_ugs <- readRDS(file.path("data", "usinas_ugs.rds"))
 
     valida_num_maq(PARAMETROS, usinas_ugs)
     valida_vol_jus(PARAMETROS, hidr)
@@ -142,5 +140,3 @@ calcula_geracao <- function(PARAMETROS) {
 
     return(out)
 }
-
-lambdr::start_lambda()
