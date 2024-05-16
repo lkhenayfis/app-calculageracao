@@ -1,4 +1,22 @@
 
+to_dataframe <- function(PARAMETROS, RESULTADO) {
+    PARAMETROS <- PARAMETROS$PARAMETROS
+    hidr <- readRDS(file.path("data", "hidr.rds"))
+    usinas_ugs <- readRDS(file.path("data", "usinas_ugs.rds"))
+    valida_num_maq(PARAMETROS, usinas_ugs)
+    valida_vol_jus(PARAMETROS, hidr)
+    PARAMETROS <- parseparametros(PARAMETROS, hidr)
+    PARAMETROS <- lapply(PARAMETROS, function(x) {
+        x$turbinamento <- sum(x$turbinamento)
+        as.data.table(x[c("codigo", "volume", "nmont", "vertimento", "turbinamento")])
+    })
+    PARAMETROS <- rbindlist(PARAMETROS)
+    RESULTADO <- lapply(RESULTADO$RESULTADO, as.data.table)
+    RESULTADO <- rbindlist(RESULTADO)
+    out <- cbind(PARAMETROS, RESULTADO[, .(geracao)])
+    return(out)
+}
+
 reform_list <- function(lixo) {
     lixo <- split(lixo, seq_len(nrow(lixo)))
     lixo <- lapply(lixo, as.list)
