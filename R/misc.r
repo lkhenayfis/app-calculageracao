@@ -63,3 +63,21 @@ get_rho_g <- function(colina) {
 }
 
 dummy_rend <- function() data.table(hl = 0, vaz = 0, rend = 0, inhull = FALSE)
+
+opt_calcula_rend <- function(queda_liq, turbinamentos, colinas, ug2colina) {
+    ug2colina[, turb := turbinamentos]
+    uniques <- ug2colina[, .(turb = unique(turb)), by = colina]
+
+    rends <- sapply(seq_len(nrow(uniques)), function(i) {
+        if (uniques[i, turb] == 0) return(0)
+        colina   <- colinas[[uniques[i, colina]]]
+        dat  <- data.table(hl = queda_liq, vaz = uniques[i, turb])
+        predict(colina, dat, as.gradecolina = FALSE)
+    })
+
+    uniques[, rend := rends]
+
+    out <- merge(ug2colina, uniques, by = c("colina", "turb"))$rend
+
+    return(out)
+}
