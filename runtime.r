@@ -29,28 +29,13 @@ calcula_geracao_unit <- function(param, hidr, usinas_ugs) {
     colinas <- le_colina(cod, colinas)
 
     queda_liq <- param$nmont - njus - perda
-    rends <- lapply(seq_along(param$turbinamento), function(i) {
-        if (param$turbinamento[i] == 0) return(dummy_rend())
-        idcolina <- usinas_ugs[(codigo == cod) & (ug == i), colina]
-        colina   <- colinas[[idcolina]]
-        dat  <- data.table(hl = queda_liq, vaz = param$turbinamento[i])
-        predict(colina, dat, as.gradecolina = TRUE)$grade[, .(hl, vaz, rend, inhull)]
-    })
-    rends <- rbindlist(rends)
-    rends[, rend := rend * 10^-2]
+    rends <- opt_calcula_rend(queda_liq, param$turbinamento, colinas, usinas_ugs[codigo == cod])
 
     # geracoes por maquina
     rho_g <- get_rho_g(colinas[[1]])
     rho <- rho_g[[1]]
     g   <- rho_g[[2]]
-    ger <- sum(rends[, hl * vaz * rend * rend_ger * g * rho * 10^-6])
-
-    if (!all(rends$inhull)) {
-        outhull <- which(!rends$inhull)
-        warn <- paste0("Usina ", cod, " teve interpolacao das maquinas (",
-            paste0(outhull, collapse = ", "), ") fora da envoltoria da colina")
-        attr(ger, "WARNING") <- warn
-    }
+    ger <- sum(queda_liq * param$turbinamento * rends * 10^-2 * rend_ger * g * rho * 10^-6)
 
     return(ger)
 }
