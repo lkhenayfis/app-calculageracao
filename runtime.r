@@ -70,6 +70,8 @@ get_rho_g <- function(colina) {
     return(list(rho, g))
 }
 
+dummy_rend <- function() data.table(hl = 0, vaz = 0, rend = 0, inhull = FALSE)
+
 # CALCULA GERACAO ----------------------------------------------------------------------------------
 
 calcula_geracao_unit <- function(param, hidr, usinas_ugs) {
@@ -94,6 +96,7 @@ calcula_geracao_unit <- function(param, hidr, usinas_ugs) {
 
     queda_liq <- param$nmont - njus - perda
     rends <- lapply(seq_along(param$turbinamento), function(i) {
+        if (param$turbinamento[i] == 0) return(dummy_rend())
         idcolina <- usinas_ugs[(codigo == cod) & (ug == i), colina]
         colina   <- colinas[[idcolina]]
         dat  <- data.table(hl = queda_liq, vaz = param$turbinamento[i])
