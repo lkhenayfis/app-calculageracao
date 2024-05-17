@@ -95,7 +95,7 @@ opt_calcula_rend <- function(queda_liq, turbinamentos, colinas, ug2colina) {
 
     uniques[, rend := rends]
 
-    out <- merge(ug2colina, uniques, by = c("colina", "turb"))$rend
+    out <- merge(ug2colina, uniques, by = c("colina", "turb"), sort = FALSE)$rend
 
     return(out)
 }
