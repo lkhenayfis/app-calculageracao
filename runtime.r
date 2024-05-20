@@ -26,7 +26,7 @@ calcula_geracao_unit <- function(param, hidr, usinas_ugs) {
 
     # rendimento de colina
     colinas <- usinas_ugs[codigo == cod, unique(colina)]
-    colinas <- le_colina(cod, colinas)
+    colinas <- structure(le_colina(cod, colinas), names = as.character(colinas))
 
     queda_liq <- param$nmont - njus - perda
     rends <- opt_calcula_rend(queda_liq, param$turbinamento, colinas, usinas_ugs[codigo == cod])

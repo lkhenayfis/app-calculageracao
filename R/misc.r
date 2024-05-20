@@ -88,7 +88,7 @@ opt_calcula_rend <- function(queda_liq, turbinamentos, colinas, ug2colina) {
 
     rends <- sapply(seq_len(nrow(uniques)), function(i) {
         if (uniques[i, turb] == 0) return(0)
-        colina   <- colinas[[uniques[i, colina]]]
+        colina   <- colinas[[as.character(uniques[i, colina])]]
         dat  <- data.table(hl = queda_liq, vaz = uniques[i, turb])
         predict(colina, dat, as.gradecolina = FALSE)
     })
